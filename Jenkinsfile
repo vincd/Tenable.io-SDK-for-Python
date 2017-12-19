@@ -61,10 +61,10 @@ python3 tenableio/commandline/sdk_test_container.py --create_container --python 
 
 cd ../tenableio-sdk || exit 1
 pip3 install -r requirements.txt || exit 1
-py.test tests --junitxml=test-results-junit.xml || exit 1
 
 python setup.py create
 '''
+//ddpy.test tests --junitxml=test-results-junit.xml || exit 1
                             }
                             finally {
 	                        step([$class: 'JUnitResultArchiver', testResults: 'tenableio-sdk/*.xml'])
