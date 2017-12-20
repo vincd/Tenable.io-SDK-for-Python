@@ -45,10 +45,25 @@ try {
     node(global.DOCKERNODE) {
         common.cleanup()
 
+        def push = env.BRANCH_NAME == releasebranch && relpush ? "push" : ""
+        
+
         // Pull the automation framework from develop
         stage('scm auto') {
             dir('tenableio-sdk') {
                 checkout scm
+
+		def USR = "meme"
+		def PWD = "meme2"
+
+//		if (push) {
+		    sh """
+echo "[pypi]" > ~/.pypirc
+echo "repository=https://pypi.python.org/pypi" >> ~/.pypirc
+echo "username=${USR}" >> ~/.pypirc
+echo "password=${PWD}" >> ~/.pypirc
+"""
+//		}
             }
             dir('automation') {
                 git(branch:'develop', changelog:false, credentialsId:global.BITBUCKETUSER, poll:false, 
@@ -85,7 +100,15 @@ cd ../tenableio-sdk || exit 1
 pip3 install -r requirements.txt || exit 1
 /bin/true || py.test tests --junitxml=test-results-junit.xml || exit 1
 
-python setup.py bdist_wheel --universal
+pip3 install wheel
+
+python setup.py bdist_wheel
+
+if [ -z "${push}" ]
+then
+  pip3 install twine
+  echo "twine upload dist/*"
+fi
 '''
                             }
                             finally {
