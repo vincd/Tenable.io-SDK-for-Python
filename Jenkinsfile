@@ -28,7 +28,7 @@ try {
         common.cleanup()
 
         stage("prepare") {
-            Boolean fail = env.BRANCH_NAME == releasebranch ? false : true
+            Boolean fail = env.BRANCH_NAME == releasebranch ? true : false
 
             def SCM = checkout scm
 
