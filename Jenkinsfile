@@ -25,9 +25,9 @@ String masterbranch = "feature/ADD_PUBLISH"
 
 try {
     node(global.DOCKERNODE) {
-        stage("prepare") {
-            common.cleanup()
+        common.cleanup()
 
+        stage("prepare") {
             Boolean fail = env.BRANCH_NAME == masterbranch ? false : true
 
             checkout scm
@@ -36,8 +36,8 @@ try {
             String ver = props['__version__']
             ver = ver.replace('"', '')
 
-            if (checkTag(ver, fail)) {
-                echo "Warning: Tag ver already exists!"
+            if (github.checkTag(ver, fail)) {
+                echo "Warning: Tag ${ver} already exists!"
             }
         }
     }
