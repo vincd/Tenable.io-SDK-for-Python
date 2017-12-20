@@ -46,23 +46,22 @@ try {
         common.cleanup()
 
         def push = env.BRANCH_NAME == releasebranch && relpush ? "push" : ""
-        
 
         // Pull the automation framework from develop
         stage('scm auto') {
             dir('tenableio-sdk') {
                 checkout scm
 
-		def USR = "meme"
-		def PWD = "meme2"
-
 //		if (push) {
-		    sh """
+  		    withCredentials([[$class:'UsernamePasswordMultiBinding', credentialsId:'PYPICREDS',
+                                      usernameVariable:'USR', passwordVariable:'PWD']]) {
+		        sh """
 echo "[pypi]" > ~/.pypirc
 echo "repository=https://pypi.python.org/pypi" >> ~/.pypirc
 echo "username=${USR}" >> ~/.pypirc
 echo "password=${PWD}" >> ~/.pypirc
 """
+                    }
 //		}
             }
             dir('automation') {
@@ -104,7 +103,7 @@ pip3 install wheel
 
 python setup.py bdist_wheel
 
-if [ -z "${push}" ]
+if [ -n "${push}" ]
 then
   pip3 install twine
   echo "twine upload dist/*"
