@@ -26,9 +26,10 @@ String masterbranch = "feature/ADD_PUBLISH"
 try {
     node(global.DOCKERNODE) {
         stage("prepare") {
+            common.cleanup()
+
             Boolean fail = env.BRANCH_NAME == masterbranch ? false : true
 
-	    deleteDir()
             checkout scm
 
 	    props = readProperties(file : 'tenable_io/__init__.py')
