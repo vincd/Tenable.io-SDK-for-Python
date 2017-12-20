@@ -20,23 +20,22 @@ Slack slack  = new Slack()
 def fmt = slack.helper()
 def auser = ''
 GitHub github = new GitHub()
-
-String masterbranch = "feature/ADD_PUBLISH"
+String releasebranch = "master"
 
 try {
     node(global.DOCKERNODE) {
         common.cleanup()
 
         stage("prepare") {
-            Boolean fail = env.BRANCH_NAME == masterbranch ? false : true
+            Boolean fail = env.BRANCH_NAME == releasebranch ? false : true
 
-            checkout scm
+            def SCM = checkout scm
 
 	    props = readProperties(file : 'tenable_io/__init__.py')
             String ver = props['__version__']
             ver = ver.replace('"', '')
 
-            if (github.checkTag(ver, fail)) {
+            if (github.checkRelease(ver, SCM, fail)) {
                 echo "Warning: Tag ${ver} already exists!"
             }
         }
@@ -86,6 +85,8 @@ pip3 install -r requirements.txt || exit 1
 /bin/true || py.test tests --junitxml=test-results-junit.xml || exit 1
 
 python setup.py bdist_wheel --universal
+
+if [ 
 '''
                             }
                             finally {
@@ -99,6 +100,22 @@ python setup.py bdist_wheel --universal
 
 	currentBuild.result = currentBuild.result ?: 'SUCCESS'
     } 
+
+    if (env.BRANCH_NAME == releasebranch) {
+        node(global.DOCKERNODE) {
+            common.cleanup()
+
+            stage("tagRepo") {
+                checkout scm
+
+	        props = readProperties(file : 'tenable_io/__init__.py')
+                String ver = props['__version__']
+                ver = ver.replace('"', '')
+
+                github.createTag(ver)
+            }
+        }
+    }
 }
 catch (exc) {
     if (currentBuild.result == null || currentBuild.result == 'ANORTED') {
