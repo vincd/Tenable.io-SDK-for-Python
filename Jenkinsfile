@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-@Library('tenable.common@feature/GITHUB')
+@Library('tenable.common')
 
 def projectProperties = [
     [$class: 'BuildDiscarderProperty',strategy: [$class: 'LogRotator', numToKeepStr: '5']],disableConcurrentBuilds(),
@@ -21,6 +21,7 @@ def fmt = slack.helper()
 def auser = ''
 GitHub github = new GitHub()
 String releasebranch = "master"
+Boolean relpush = false
 
 try {
     node(global.DOCKERNODE) {
@@ -85,8 +86,6 @@ pip3 install -r requirements.txt || exit 1
 /bin/true || py.test tests --junitxml=test-results-junit.xml || exit 1
 
 python setup.py bdist_wheel --universal
-
-if [ 
 '''
                             }
                             finally {
@@ -101,18 +100,18 @@ if [
 	currentBuild.result = currentBuild.result ?: 'SUCCESS'
     } 
 
-    if (env.BRANCH_NAME == releasebranch) {
+    if (env.BRANCH_NAME == releasebranch && relpush) {
         node(global.DOCKERNODE) {
             common.cleanup()
 
             stage("tagRepo") {
-                checkout scm
+                def SCM = checkout scm
 
 	        props = readProperties(file : 'tenable_io/__init__.py')
                 String ver = props['__version__']
                 ver = ver.replace('"', '')
 
-                github.createTag(ver)
+                github.createRelease(ver, SCM)
             }
         }
     }
