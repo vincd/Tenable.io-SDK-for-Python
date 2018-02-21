@@ -20,7 +20,7 @@ def fmt = slack.helper()
 def auser = ''
 
 try {
-    node("docker-triage") {
+    node("docker") {
         common.cleanup()
 
         // Pull the automation framework from develop
