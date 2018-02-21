@@ -20,7 +20,7 @@ def fmt = slack.helper()
 def auser = ''
 
 try {
-    node(global.DOCKERNODE) {
+    node("docker-triage") {
         common.cleanup()
 
         // Pull the automation framework from develop
@@ -44,7 +44,7 @@ try {
                     common.prepareGit()
 
                     sshagent([global.BITBUCKETUSER]) {
-                        timeout(time: 120, unit: 'MINUTES') {
+                        timeout(time: 800, unit: 'MINUTES') {
                             try {
                                 sh '''
 cd automation || exit 1
