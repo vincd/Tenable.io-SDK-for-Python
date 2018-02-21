@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?><testsuite errors="3" failures="10" name="pytest" skips="0" tests="14" time="9.987"><testcase classname="tests.integration.test_client.TestTenableIOClient" file="tests/integration/test_client.py" line="7" name="test_client_bad_keys" time="0.672056913376"><system-out>
+TestTenableIOClient:test_client_bad_keys is running.
+
+TestTenableIOClient:test_client_bad_keys took (0.671977996826 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/session&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;GET&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;005a7f252ca9800b5c9d5eba9597b0c8&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.test_examples.TestExamples" file="tests/integration/test_examples.py" line="6" name="test_files" time="0.612244129181"><failure message="TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}">self = &lt;tests.integration.test_examples.TestExamples object at 0x111898190&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+
+    def test_files(self, app):
+        from examples.files import example
+&gt;       example(app.session_file_output)
+
+tests/integration/test_examples.py:9: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+examples/files.py:19: in example
+    uploaded_file_name = client.file_helper.upload(upload_file)
+tenable_io/helpers/file.py:21: in upload
+    uploaded_file_name = self._client.file_api.upload(upload_file)
+tenable_io/api/file.py:17: in upload
+    response = self._client.post(&apos;file/upload&apos;, files={&apos;Filedata&apos;: (os.path.basename(file.name), file)})
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x111898490&gt;, &apos;file/upload&apos;)
+kwargs = {&apos;files&apos;: {&apos;Filedata&apos;: (&apos;example_upload&apos;, &lt;closed file u&apos;./._tests__bd2aefbd/example_upload&apos;, mode &apos;rb&apos; at 0x1118545d0&gt;)}}, response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</failure><system-out>
+TestExamples:test_files is running.
+
+TestExamples:test_files took (0.692462921143 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/file/upload&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;POST&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;b14f92b925618e1102512b6cec059945&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.test_examples.TestExamples" file="tests/integration/test_examples.py" line="10" name="test_folders" time="0.635658979416"><failure message="TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}">self = &lt;tests.integration.test_examples.TestExamples object at 0x1118c4b50&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+
+    def test_folders(self, app):
+        from examples.folders import example
+&gt;       example(app.session_name)
+
+tests/integration/test_examples.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+examples/folders.py:21: in example
+    name=folder_name
+tenable_io/helpers/folder.py:46: in create
+    return FolderRef(self._client, self._client.folders_api.create(name))
+tenable_io/api/folders.py:16: in create
+    response = self._client.post(&apos;folders&apos;, {&apos;name&apos;: name})
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x1118c4c90&gt;, &apos;folders&apos;, {&apos;name&apos;: &apos;my test folder_bd2ae&apos;}), kwargs = {}, response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</failure><system-out>
+TestExamples:test_folders is running.
+
+TestExamples:test_folders took (0.656373977661 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/folders&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;POST&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;cbf352799e86a77265c8f8c74be4f009&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.test_examples.TestExamples" file="tests/integration/test_examples.py" line="14" name="test_policies" time="0.526327133179"><failure message="TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}">self = &lt;tests.integration.test_examples.TestExamples object at 0x11192d690&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+
+    def test_policies(self, app):
+        from examples.policies import example
+&gt;       example(app.session_name, app.session_file_output)
+
+tests/integration/test_examples.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+examples/policies.py:23: in example
+    template=&apos;discovery&apos;
+tenable_io/helpers/policy.py:21: in create
+    t = self.template(name=template)
+tenable_io/helpers/policy.py:61: in template
+    template_list = self._client.editor_api.list(&apos;policy&apos;)
+tenable_io/api/editor.py:14: in list
+    response = self._client.get(&apos;editor/%(type)s/templates&apos;, path_params={&apos;type&apos;: type})
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x11192d590&gt;, &apos;editor/%(type)s/templates&apos;), kwargs = {&apos;path_params&apos;: {&apos;type&apos;: &apos;policy&apos;}}
+response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</failure><system-out>
+TestExamples:test_policies is running.
+
+TestExamples:test_policies took (0.542897939682 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/editor/policy/templates&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;GET&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;956aa1e9ba5644ebef69531a394c044d&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.test_examples.TestExamples" file="tests/integration/test_examples.py" line="18" name="test_scans" time="0.00182509422302"><failure message="NoOptionError: No option &apos;scan_text_targets&apos; in section: &apos;tenable_io-test&apos;">self = &lt;tests.integration.test_examples.TestExamples object at 0x11190c710&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+
+    def test_scans(self, app):
+        from examples.scans import example
+&gt;       example(app.session_name, app.session_file_output, TenableIOTestConfig.get(&apos;scan_text_targets&apos;))
+
+tests/integration/test_examples.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/config.py:25: in get
+    return config.get(&apos;tenable_io-test&apos;, key)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;ConfigParser.SafeConfigParser instance at 0x110c703b0&gt;, section = &apos;tenable_io-test&apos;, option = &apos;scan_text_targets&apos;, raw = False, vars = None
+
+    def get(self, section, option, raw=False, vars=None):
+        &quot;&quot;&quot;Get an option value for a given section.
+    
+            If `vars&apos; is provided, it must be a dictionary. The option is looked up
+            in `vars&apos; (if provided), `section&apos;, and in `defaults&apos; in that order.
+    
+            All % interpolations are expanded in the return values, unless the
+            optional argument `raw&apos; is true. Values for interpolation keys are
+            looked up in the same manner as the option.
+    
+            The section DEFAULT is special.
+            &quot;&quot;&quot;
+        sectiondict = {}
+        try:
+            sectiondict = self._sections[section]
+        except KeyError:
+            if section != DEFAULTSECT:
+                raise NoSectionError(section)
+        # Update with the entry specific variables
+        vardict = {}
+        if vars:
+            for key, value in vars.items():
+                vardict[self.optionxform(key)] = value
+        d = _Chainmap(vardict, sectiondict, self._defaults)
+        option = self.optionxform(option)
+        try:
+            value = d[option]
+        except KeyError:
+&gt;           raise NoOptionError(option, section)
+E           NoOptionError: No option &apos;scan_text_targets&apos; in section: &apos;tenable_io-test&apos;
+
+/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/lib/python2.7/ConfigParser.py:618: NoOptionError</failure><system-out>
+TestExamples:test_scans is running.
+
+TestExamples:test_scans took (0.0229699611664 seconds).
+</system-out></testcase><testcase classname="tests.integration.test_examples.TestExamples" file="tests/integration/test_examples.py" line="22" name="test_workbench" time="0.638292074203"><failure message="TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}">self = &lt;tests.integration.test_examples.TestExamples object at 0x1118f3890&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+
+    def test_workbench(self, app):
+        from examples.workbench import example
+&gt;       example(app.session_file_output)
+
+tests/integration/test_examples.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+examples/workbench.py:23: in example
+    assets = [a for page in assets_iter for a in page]
+tenable_io/helpers/workbench.py:84: in assets_parse
+    &apos;value&apos;: &apos;All&apos;,
+tenable_io/api/workbenches.py:167: in export_request
+    params={k: params[k] for k in params if params[k] is not None})
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x1118f3f10&gt;, &apos;workbenches/export&apos;)
+kwargs = {&apos;params&apos;: {&apos;chapter&apos;: &apos;vuln_by_asset&apos;, &apos;date_range&apos;: 7, &apos;filter&apos;: [{&apos;filter&apos;: &apos;severity&apos;, &apos;quality&apos;: &apos;qt&apos;, &apos;value&apos;: &apos;All&apos;}], &apos;format&apos;: &apos;nessus&apos;, ...}}
+response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</failure><system-out>
+TestExamples:test_workbench is running.
+
+TestExamples:test_workbench took (0.664947986603 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/workbenches/export?chapter=vuln_by_asset&amp;filter.0.quality=qt&amp;filter.0.value=All&amp;format=nessus&amp;filter.0.filter=severity&amp;date_range=7&amp;report=vulnerabilities&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;GET&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;694635a1ce0f660805ddf7187f9e8b55&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.test_impersonation.TestImpersonation" file="tests/integration/test_impersonation.py" line="24" name="test_impersonation" time="0.00125598907471"><error message="test setup failure">self = &lt;tests.integration.test_impersonation.TestImpersonation object at 0x11175aa10&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+client = &lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;
+
+    @pytest.fixture(scope=&apos;class&apos;)
+    def user(self, app, client):
+        user_id = client.users_api.create(UserCreateRequest(
+&gt;           username=app.session_name(u&apos;test_impersonation%%s@%s&apos; % TenableIOTestConfig.get(&apos;users_domain_name&apos;)),
+            name=&apos;test_impersonation&apos;,
+            password=&apos;Sdk!Test1&apos;,
+            permissions=&apos;16&apos;,
+            type=&apos;local&apos;,
+            email=app.session_name(u&apos;test_user_email+%%s@%s&apos; % TenableIOTestConfig.get(&apos;users_domain_name&apos;))
+        ))
+
+tests/integration/test_impersonation.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/config.py:25: in get
+    return config.get(&apos;tenable_io-test&apos;, key)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;ConfigParser.SafeConfigParser instance at 0x110c703b0&gt;, section = &apos;tenable_io-test&apos;, option = &apos;users_domain_name&apos;, raw = False, vars = None
+
+    def get(self, section, option, raw=False, vars=None):
+        &quot;&quot;&quot;Get an option value for a given section.
+    
+            If `vars&apos; is provided, it must be a dictionary. The option is looked up
+            in `vars&apos; (if provided), `section&apos;, and in `defaults&apos; in that order.
+    
+            All % interpolations are expanded in the return values, unless the
+            optional argument `raw&apos; is true. Values for interpolation keys are
+            looked up in the same manner as the option.
+    
+            The section DEFAULT is special.
+            &quot;&quot;&quot;
+        sectiondict = {}
+        try:
+            sectiondict = self._sections[section]
+        except KeyError:
+            if section != DEFAULTSECT:
+                raise NoSectionError(section)
+        # Update with the entry specific variables
+        vardict = {}
+        if vars:
+            for key, value in vars.items():
+                vardict[self.optionxform(key)] = value
+        d = _Chainmap(vardict, sectiondict, self._defaults)
+        option = self.optionxform(option)
+        try:
+            value = d[option]
+        except KeyError:
+&gt;           raise NoOptionError(option, section)
+E           NoOptionError: No option &apos;users_domain_name&apos; in section: &apos;tenable_io-test&apos;
+
+/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/lib/python2.7/ConfigParser.py:618: NoOptionError</error><system-out>
+TestImpersonation:test_impersonation is running.
+
+TestImpersonation:test_impersonation took (0.0219631195068 seconds).
+</system-out></testcase><testcase classname="tests.integration.api.test_agent_config.TestAgentConfigApi" file="tests/integration/api/test_agent_config.py" line="10" name="test_details_edit" time="0.563136100769"><failure message="TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}">self = &lt;tests.integration.api.test_agent_config.TestAgentConfigApi object at 0x111901d10&gt;, client = &lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;
+
+    def test_details_edit(self, client):
+        # Get agent config details.
+&gt;       previous_config = client.agent_config_api.details()
+
+tests/integration/api/test_agent_config.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tenable_io/api/agent_config.py:31: in details
+    &apos;scanner_id&apos;: scanner_id
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;, &apos;scanners/%(scanner_id)s/agents/config&apos;), kwargs = {&apos;path_params&apos;: {&apos;scanner_id&apos;: 1}}
+response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</failure><system-out>
+TestAgentConfigApi:test_details_edit is running.
+
+TestAgentConfigApi:test_details_edit took (0.573517799377 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/scanners/1/agents/config&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;GET&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;14039b8ac008962f2d184db9e20014d7&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.api.test_agent_exclusions.TestAgentExclusionsApi" file="tests/integration/api/test_agent_exclusions.py" line="52" name="test_create_list_delete" time="0.948745250702"><failure message="TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}">self = &lt;tests.integration.api.test_agent_exclusions.TestAgentExclusionsApi object at 0x111970850&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+client = &lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;
+
+    def test_create_list_delete(self, app, client):
+        new_exclusion = client.agent_exclusions_api.create(
+            AgentExclusionCreateRequest(
+                app.session_name(&apos;test_agent_exclusions_list&apos;),
+&gt;               u&apos;fake.tenable.com&apos;
+            )
+        )
+
+tests/integration/api/test_agent_exclusions.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tenable_io/api/agent_exclusions.py:17: in create
+    &apos;scanner_id&apos;: scanner_id
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;, &apos;scanners/%(scanner_id)s/agents/exclusions&apos;, &lt;tenable_io.api.agent_exclusions.AgentExclusionCreateRequest object at 0x111970910&gt;)
+kwargs = {&apos;path_params&apos;: {&apos;scanner_id&apos;: 1}}, response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</failure><system-out>
+TestAgentExclusionsApi:test_create_list_delete is running.
+
+TestAgentExclusionsApi:test_create_list_delete took (0.961987018585 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/scanners/1/agents/exclusions&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;POST&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;34d8b8983025403c2d05c83556cbd3d9&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.api.test_agent_exclusions.TestAgentExclusionsApi" file="tests/integration/api/test_agent_exclusions.py" line="77" name="test_details" time="1.04366016388"><error message="test setup failure">self = &lt;tests.integration.api.test_agent_exclusions.TestAgentExclusionsApi object at 0x11176b890&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+client = &lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;, schedule_once = &lt;tenable_io.api.models.AgentExclusionSchedule object at 0x111922fd0&gt;
+
+    @pytest.fixture(scope=&apos;class&apos;)
+    def exclusion(self, app, client, schedule_once):
+        &quot;&quot;&quot;
+            Create an exclusion for testing.
+            &quot;&quot;&quot;
+        exclusion = client.agent_exclusions_api.create(
+            AgentExclusionCreateRequest(
+                app.session_name(&apos;test_agent_exclusions&apos;),
+                u&apos;test description&apos;,
+&gt;               schedule_once
+            )
+        )
+
+tests/integration/api/test_agent_exclusions.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tenable_io/api/agent_exclusions.py:17: in create
+    &apos;scanner_id&apos;: scanner_id
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;, &apos;scanners/%(scanner_id)s/agents/exclusions&apos;, &lt;tenable_io.api.agent_exclusions.AgentExclusionCreateRequest object at 0x111922090&gt;)
+kwargs = {&apos;path_params&apos;: {&apos;scanner_id&apos;: 1}}, response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</error><system-out>
+TestAgentExclusionsApi:test_details is running.
+
+TestAgentExclusionsApi:test_details took (1.05679702759 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/scanners/1/agents/exclusions&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;POST&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;be57486b1525fedaafa62a912033ec52&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.api.test_agent_exclusions.TestAgentExclusionsApi" file="tests/integration/api/test_agent_exclusions.py" line="81" name="test_edit" time="0.000836133956909"><error message="test setup failure">self = &lt;tests.integration.api.test_agent_exclusions.TestAgentExclusionsApi object at 0x11176b890&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+client = &lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;, schedule_once = &lt;tenable_io.api.models.AgentExclusionSchedule object at 0x111922fd0&gt;
+
+    @pytest.fixture(scope=&apos;class&apos;)
+    def exclusion(self, app, client, schedule_once):
+        &quot;&quot;&quot;
+            Create an exclusion for testing.
+            &quot;&quot;&quot;
+        exclusion = client.agent_exclusions_api.create(
+            AgentExclusionCreateRequest(
+                app.session_name(&apos;test_agent_exclusions&apos;),
+                u&apos;test description&apos;,
+&gt;               schedule_once
+            )
+        )
+
+tests/integration/api/test_agent_exclusions.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tenable_io/api/agent_exclusions.py:17: in create
+    &apos;scanner_id&apos;: scanner_id
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;, &apos;scanners/%(scanner_id)s/agents/exclusions&apos;, &lt;tenable_io.api.agent_exclusions.AgentExclusionCreateRequest object at 0x111922090&gt;)
+kwargs = {&apos;path_params&apos;: {&apos;scanner_id&apos;: 1}}, response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</error><system-out>
+TestAgentExclusionsApi:test_edit is running.
+
+TestAgentExclusionsApi:test_edit took (0.0129241943359 seconds).
+</system-out></testcase><testcase classname="tests.integration.api.test_agent_groups.TestAgentGroupsApi" file="tests/integration/api/test_agent_groups.py" line="10" name="test_create_list_details_configure_delete" time="1.11535096169"><failure message="TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}">self = &lt;tests.integration.api.test_agent_groups.TestAgentGroupsApi object at 0x111863b50&gt;, app = &lt;tests.conftest.App instance at 0x1117175f0&gt;
+client = &lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;
+
+    def test_create_list_details_configure_delete(self, app, client):
+        # Create agent group for testing.
+        agent_group_name = app.session_name(&apos;test_agent_groups&apos;)
+        agent_group_id = client.agent_groups_api.create(
+            AgentGroupSaveRequest(
+&gt;               agent_group_name
+            )
+        )
+
+tests/integration/api/test_agent_groups.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tenable_io/api/agent_groups.py:98: in create
+    &apos;scanner_id&apos;: scanner_id
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;, &apos;scanners/%(scanner_id)s/agent-groups&apos;, &lt;tenable_io.api.agent_groups.AgentGroupSaveRequest object at 0x1118f33d0&gt;)
+kwargs = {&apos;path_params&apos;: {&apos;scanner_id&apos;: 1}}, response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</failure><system-out>
+TestAgentGroupsApi:test_create_list_details_configure_delete is running.
+
+TestAgentGroupsApi:test_create_list_details_configure_delete took (1.12831282616 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/scanners/1/agent-groups&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;POST&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;4497c81f0f70ae6a701d3f97688987cd&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.api.test_agents.TestAgentsApi" file="tests/integration/api/test_agents.py" line="8" name="test_delete" time="0.824818849564"><failure message="AssertionError: Bad request for string agent_id or agent not found.
+assert &lt;tenable_io.exceptions.ErrorCode object at 0x11161c110&gt; in (&lt;tenable_io.exceptions.ErrorCode object at 0x11161c0d0&gt;, &lt;tenable_io.exceptions.ErrorCode object at 0x11161c1d0&gt;)
+ +  where &lt;tenable_io.exceptions.ErrorCode object at 0x11161c110&gt; = TenableIOApiException().code">self = &lt;tests.integration.api.test_agents.TestAgentsApi object at 0x111974990&gt;, client = &lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;
+
+    def test_delete(self, client):
+        try:
+            client.agents_api.delete(&apos;test_agents_delete&apos;)
+        except TenableIOApiException as e:
+&gt;           assert e.code in (TenableIOErrorCode.BAD_REQUEST, TenableIOErrorCode.NOT_FOUND), \
+                u&apos;Bad request for string agent_id or agent not found.&apos;
+E           AssertionError: Bad request for string agent_id or agent not found.
+E           assert &lt;tenable_io.exceptions.ErrorCode object at 0x11161c110&gt; in (&lt;tenable_io.exceptions.ErrorCode object at 0x11161c0d0&gt;, &lt;tenable_io.exceptions.ErrorCode object at 0x11161c1d0&gt;)
+E            +  where &lt;tenable_io.exceptions.ErrorCode object at 0x11161c110&gt; = TenableIOApiException().code
+
+tests/integration/api/test_agents.py:13: AssertionError</failure><system-out>
+TestAgentsApi:test_delete is running.
+
+TestAgentsApi:test_delete took (0.82757806778 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/scanners/1/agents/test_agents_delete&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;DELETE&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;374a77af8b477d4f23bf4b1d465956cd&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase classname="tests.integration.api.test_agents.TestAgentsApi" file="tests/integration/api/test_agents.py" line="15" name="test_list" time="0.943003892899"><failure message="TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}">self = &lt;tests.integration.api.test_agents.TestAgentsApi object at 0x112a0d550&gt;, client = &lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;
+
+    def test_list(self, client):
+&gt;       agent_list = client.agents_api.list()
+
+tests/integration/api/test_agents.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tenable_io/api/agents.py:51: in list
+    flatten_params=False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (&lt;tenable_io.client.TenableIOClient object at 0x1118989d0&gt;, &apos;scanners/%(scanner_id)s/agents&apos;)
+kwargs = {&apos;flatten_params&apos;: False, &apos;params&apos;: {}, &apos;path_params&apos;: {&apos;scanner_id&apos;: 1}}, response = &lt;Response [401]&gt;
+
+    def wrapper(*args, **kwargs):
+        response = f(*args, **kwargs)
+        if not 200 &lt;= response.status_code &lt;= 299:
+&gt;           raise TenableIOApiException(response)
+E           TenableIOApiException: {&quot;statusCode&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;message&quot;:&quot;Invalid credentials.&quot;}
+
+tenable_io/client.py:140: TenableIOApiException</failure><system-out>
+TestAgentsApi:test_list is running.
+
+TestAgentsApi:test_list took (0.953943967819 seconds).
+</system-out><system-err>ERROR:tenable_io:{&quot;url&quot;: &quot;/scanners/1/agents&quot;, &quot;status_code&quot;: 401, &quot;reason&quot;: &quot;Unauthorized&quot;, &quot;method&quot;: &quot;GET&quot;, &quot;response_headers&quot;: {&quot;X-Request-Uuid&quot;: &quot;ed8f3a740b3472796195126f7055944b&quot;, &quot;X-Gateway-Site-ID&quot;: &quot;nginx-router-b-prod-eu-central-1&quot;}}
+</system-err></testcase><testcase time="0.000393152236938"></testcase></testsuite>
