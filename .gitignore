@@ -17,3 +17,4 @@ tenable_io.ini
 
 # IntelliJ / PyCharm IDE
 .idea/
+test-results-junit.xml
