@@ -59,7 +59,7 @@ python3 tenableio/commandline/sdk_test_container.py --create_container --python 
 
 cd ../tenableio-sdk || exit 1
 pip3 install -r requirements.txt || exit 1
-py.test tests --verbose -x --junitxml=test-results-junit.xml || exit 1
+py.test tests --junitxml=test-results-junit.xml || exit 1
 '''
                             }
                             finally {
