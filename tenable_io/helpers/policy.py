@@ -8,7 +8,7 @@ class PolicyHelper(object):
     def __init__(self, client):
         self._client = client
 
-    def create(self, name, template):
+    def create(self, name, template, credentials=None):
         """Create a policy.
 
         :param name: The name of the policy.
@@ -29,7 +29,8 @@ class PolicyHelper(object):
         policy_id = self._client.policies_api.create(
             PolicyCreateRequest(
                 t.uuid,
-                PolicySettings(name=name)
+                PolicySettings(name=name),
+                credentials=None
             )
         )
         return PolicyRef(self._client, policy_id)

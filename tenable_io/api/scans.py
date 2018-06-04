@@ -1,7 +1,7 @@
 from json import loads
 
 from tenable_io.api.base import BaseApi
-from tenable_io.api.models import Scan, ScanDetails, ScanHistory, ScanHostDetails, ScanList, ScanSettings
+from tenable_io.api.models import Scan, ScanDetails, ScanHistory, ScanHostDetails, ScanList, ScanSettings, PolicyCredentials
 from tenable_io.api.base import BaseRequest
 
 
@@ -214,10 +214,13 @@ class ScanSaveRequest(BaseRequest):
             self,
             uuid,
             settings,
+            credentials
     ):
         assert isinstance(settings, ScanSettings)
+        assert isinstance(credentials, PolicyCredentials)
         self.uuid = uuid
         self.settings = settings
+        self.credentials = credentials
 
     def as_payload(self, filter_=None):
         payload = super(ScanSaveRequest, self).as_payload(True)
@@ -225,6 +228,10 @@ class ScanSaveRequest(BaseRequest):
             payload.__setitem__('settings', self.settings.as_payload())
         else:
             payload.pop('settings', None)
+        if isinstance(self.credentials, PolicyCredentials):
+            payload.__setitem__('credentials', self.credentials.as_payload())
+        else:
+            payload.pop('credentials', None)
         return payload
 
 
@@ -234,8 +241,9 @@ class ScanCreateRequest(ScanSaveRequest):
             self,
             uuid,
             settings=None,
+            credentials=None
     ):
-        super(ScanCreateRequest, self).__init__(uuid, settings)
+        super(ScanCreateRequest, self).__init__(uuid, settings, credentials)
 
 
 class ScanConfigureRequest(ScanSaveRequest):

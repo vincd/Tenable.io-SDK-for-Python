@@ -969,6 +969,100 @@ class PolicyCredentials(BaseModel):
         self.delete = delete
         self.edit = edit
 
+    def as_payload(self, filter_=None):
+        payload = super(PolicyCredentials, self).as_payload(True)
+        if isinstance(self.add, PolicyCredentialsAdd):
+            payload.__setitem__('add', self.add.as_payload(True))
+        else:
+            payload.pop('add', None)
+        return payload
+
+class PolicyCredentialsAdd(BaseModel):
+
+    def __init__(
+        self,
+        Host=None
+    ):
+        self.Host = Host
+
+    def as_payload(self, filter_=None):
+        payload = super(PolicyCredentialsAdd, self).as_payload(True)
+        if isinstance(self.Host, PolicyCredentialsAddHost):
+            payload.__setitem__('Host', self.Host.as_payload(True))
+        else:
+            payload.pop('Host', None)
+        return payload
+
+class PolicyCredentialsAddHost(BaseModel):
+
+    def __init__(
+        self,
+        SSH=None,
+        Windows=None
+    ):
+        self.SSH = SSH if SSH else []
+        self.Windows = Windows if Windows else []
+
+    def as_payload(self, filter_=None):
+        payload = super(PolicyCredentialsAddHost, self).as_payload(True)
+
+        if isinstance(self.SSH, list):
+            payload.__setitem__('SSH', [])
+            for ssh in self.SSH:
+                if isinstance(ssh, PolicyCredentialsAddHostSSH):
+                    payload['SSH'].append(ssh.as_payload(True))
+        else:
+            payload.pop('SSH', None)
+
+        if isinstance(self.Windows, list):
+            payload.__setitem__('Windows', [])
+            for windows in self.Windows:
+                if isinstance(windows, PolicyCredentialsAddHostWindows):
+                    payload['Windows'].append(windows.as_payload(True))
+        else:
+            payload.pop('Windows', None)
+
+        return payload
+
+class PolicyCredentialsAddHostSSH(BaseModel):
+
+    def __init__(
+        self,
+        auth_method=None,
+        elevate_privileges_with=None,
+        password=None,
+        username=None
+    ):
+        self.auth_method = auth_method
+        self.elevate_privileges_with = elevate_privileges_with
+        self.password = password
+        self.username = username
+
+    @classmethod
+    def CredentialPassword(class_, username, password):
+        return class_(auth_method="password", elevate_privileges_with="Nothing",
+                username=username,  password=password)
+
+
+class PolicyCredentialsAddHostWindows(BaseModel):
+
+    def __init__(
+        self,
+        auth_method=None,
+        domain=None,
+        password=None,
+        username=None
+    ):
+        self.auth_method = auth_method
+        self.domain = domain
+        self.password = password
+        self.username = username
+
+    @classmethod
+    def CredentialPassword(class_, domain, username, password):
+        return class_(auth_method="Password",
+                domain=domain, username=username,  password=password)
+
 
 class PolicySCAP(BaseModel):
 
@@ -1680,7 +1774,6 @@ class ScanSettings(BaseModel):
         self.scanner_id = scanner_id
         self.text_targets = text_targets
         self.acls = acls
-
 
 class ScannerLicense(BaseModel):
 

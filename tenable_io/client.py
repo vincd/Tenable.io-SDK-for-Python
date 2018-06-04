@@ -41,6 +41,9 @@ from tenable_io.helpers.scan import ScanHelper
 from tenable_io.helpers.workbench import WorkbenchHelper
 from tenable_io.log import format_request, logging
 
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class TenableIOClient(object):
 
@@ -50,15 +53,18 @@ class TenableIOClient(object):
 
     def __init__(
             self,
-            access_key=TenableIOConfig.get('access_key'),
-            secret_key=TenableIOConfig.get('secret_key'),
+            username,
+            password,
+            api_token,
             endpoint=TenableIOConfig.get('endpoint'),
-            impersonate=None,
+            verify=True
+
     ):
-        self._access_key = access_key
-        self._secret_key = secret_key
+        self._username = username
+        self._password = password
+        self._api_token = api_token
         self._endpoint = endpoint
-        self._impersonate = impersonate
+        self._verify = verify
 
         self._init_session()
         self._init_api()
@@ -78,14 +84,26 @@ class TenableIOClient(object):
         self._session = requests.Session()
         self._session.mount('http://', adapter)
         self._session.mount('https://', adapter)
+
         self._session.headers.update({
-            u'X-ApiKeys': u'accessKey=%s; secretKey=%s;' % (self._access_key, self._secret_key),
             u'User-Agent': u'TenableIOSDK Python/%s' % ('.'.join([str(i) for i in sys.version_info][0:3]))
         })
-        if self._impersonate:
-            self._session.headers.update({
-                u'X-Impersonate': u'username=%s' % self._impersonate
-            })
+
+        if not self._api_token:
+            nessus_response = self.get('nessus6.js')
+            if nessus_response.status_code == 200:
+                nessus_javascript = nessus_response.text
+                api_token_index = nessus_javascript.index('"getApiToken"')
+                self._api_token = nessus_javascript[api_token_index+38:api_token_index+38+36]
+
+        self._session.headers.update({
+            u'X-API-Token': self._api_token,
+        })
+
+        auth_response = self.post('session', payload={"username": self._username, "password": self._password})
+        if auth_response.status_code == 200:
+            token = auth_response.json().get('token')
+            self._session.headers.update({ u'X-Cookie': u'token=%s' % token })
 
     def _init_api(self):
         """
@@ -153,6 +171,7 @@ class TenableIOClient(object):
     @_error_handler
     def post(self, uri, payload=None, path_params=None, **kwargs):
         if isinstance(payload, BaseRequest):
+            print type(payload)
             payload = payload.as_payload()
         return self._request('POST', uri, path_params, json=payload, **kwargs)
 
@@ -197,7 +216,7 @@ class TenableIOClient(object):
 
         full_uri = self._endpoint + uri
 
-        response = self._session.request(method, full_uri, **kwargs)
+        response = self._session.request(method, full_uri, verify=self._verify, **kwargs)
         log_message = format_request(response)
 
         logging.info(log_message)

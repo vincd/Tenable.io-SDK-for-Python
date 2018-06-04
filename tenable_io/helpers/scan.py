@@ -6,6 +6,7 @@ import time
 from datetime import datetime, timedelta
 
 from tenable_io.api.models import Scan, ScanSettings, Template
+from tenable_io.api.models import PolicyCredentials
 from tenable_io.api.scans import ScansApi, ScanCreateRequest, ScanExportRequest, ScanImportRequest, ScanLaunchRequest
 from tenable_io.exceptions import TenableIOException
 import tenable_io.util as util
@@ -78,7 +79,7 @@ class ScanHelper(object):
         [scan.wait_until_stopped() for scan in scans]
         return self
 
-    def create(self, name, text_targets, template):
+    def create(self, name, text_targets, template, credentials=None):
         """Get scan by ID.
 
         :param name: The name of the Scan to be created.
@@ -100,13 +101,19 @@ class ScanHelper(object):
         if not t:
             raise TenableIOException(u'Template with name or title as "%s" not found.' % template)
 
+        if credentials and not isinstance(credentials, PolicyCredentials):
+            raise TenableIOException(u'Credentials is not an instance of PolicyCredentials.')
+        else:
+            credentials = PolicyCredentials()
+
         scan_id = self._client.scans_api.create(
             ScanCreateRequest(
                 t.uuid,
                 ScanSettings(
                     name,
                     text_targets,
-                )
+                ),
+                credentials
             )
         )
         return ScanRef(self._client, scan_id)
