@@ -1,11 +1,11 @@
 import requests
 import sys
+from time import sleep
 
-from requests.packages.urllib3 import Retry
 from requests.utils import quote
 
 from tenable_io.config import TenableIOConfig
-from tenable_io.exceptions import TenableIOApiException
+from tenable_io.exceptions import TenableIOApiException, TenableIORetryableApiException
 from tenable_io.api.agent_exclusions import AgentExclusionsApi
 from tenable_io.api.agent_config import AgentConfigApi
 from tenable_io.api.agent_groups import AgentGroupsApi
@@ -50,6 +50,7 @@ class TenableIOClient(object):
     _MAX_RETRIES = TenableIOConfig.get('max_retries')
     _TOTAL_RETRIES = _MAX_RETRIES if int(_MAX_RETRIES) < 5 else 5
     _RETRY_STATUS_CODES = {429, 500, 501, 502, 503, 504}
+    _RETRY_SLEEP_MILLISECONDS = TenableIOConfig.get('retry_sleep_milliseconds')
 
     def __init__(
             self,
@@ -74,17 +75,7 @@ class TenableIOClient(object):
         """
         Initializes the requests session
         """
-        retries = Retry(
-                    total=int(TenableIOClient._TOTAL_RETRIES),
-                    status_forcelist=TenableIOClient._RETRY_STATUS_CODES,
-                    backoff_factor=2,
-                    respect_retry_after_header=True
-        )
-        adapter = requests.adapters.HTTPAdapter(max_retries=retries)
         self._session = requests.Session()
-        self._session.mount('http://', adapter)
-        self._session.mount('https://', adapter)
-
         self._session.headers.update({
             u'User-Agent': u'TenableIOSDK Python/%s' % ('.'.join([str(i) for i in sys.version_info][0:3]))
         })
@@ -147,6 +138,37 @@ class TenableIOClient(object):
         self.scan_helper = ScanHelper(self)
         self.workbench_helper = WorkbenchHelper(self)
 
+    def _retry(f):
+        """
+        Decorator to retry and set the X-Tio-Retry-Count header when TenableIORetryableException is caught.
+        :param f: Method to retry.
+        :return: A decorated method that implicitly retry the original method upon \
+        TenableIORetryableException is caught.
+        """
+        def wrapper(*args, **kwargs):
+            total_retries = int(TenableIOClient._TOTAL_RETRIES)
+            count = 0
+            sleep_ms = 0
+            if 'headers' not in kwargs or not kwargs['headers']:
+                kwargs['headers'] = {}
+
+            while count <= total_retries:
+                # Set retry count header
+                if count > 0:
+                    kwargs['headers'].update({u'X-Tio-Retry-Count': str(count)})
+                count += 1
+
+                try:
+                    return f(*args, **kwargs)
+                except TenableIORetryableApiException as exception:
+                    if count > total_retries:
+                        raise TenableIOApiException(exception.response)
+                    sleep_ms += count * int(TenableIOClient._RETRY_SLEEP_MILLISECONDS)
+                    sleep(sleep_ms / 1000.0)
+                    logging.warn(u'RETRY(%d/%d)AFTER(%dms):%s' %
+                                 (count, total_retries, sleep_ms, format_request(exception.response)))
+        return wrapper
+
     def _error_handler(f):
         """
         Decorator to handle response error.
@@ -155,6 +177,8 @@ class TenableIOClient(object):
         """
         def wrapper(*args, **kwargs):
             response = f(*args, **kwargs)
+            if response.status_code in TenableIOClient._RETRY_STATUS_CODES:
+                raise TenableIORetryableApiException(response)
             if not 200 <= response.status_code <= 299:
                 raise TenableIOApiException(response)
             return response
@@ -164,10 +188,12 @@ class TenableIOClient(object):
     def impersonate(username):
         return TenableIOClient(impersonate=username)
 
+    @_retry
     @_error_handler
     def get(self, uri, path_params=None, **kwargs):
         return self._request('GET', uri, path_params, **kwargs)
 
+    @_retry
     @_error_handler
     def post(self, uri, payload=None, path_params=None, **kwargs):
         if isinstance(payload, BaseRequest):
@@ -175,12 +201,14 @@ class TenableIOClient(object):
             payload = payload.as_payload()
         return self._request('POST', uri, path_params, json=payload, **kwargs)
 
+    @_retry
     @_error_handler
     def put(self, uri, payload=None, path_params=None, **kwargs):
         if isinstance(payload, BaseRequest):
             payload = payload.as_payload()
         return self._request('PUT', uri, path_params, json=payload, **kwargs)
 
+    @_retry
     @_error_handler
     def delete(self, uri, path_params=None, **kwargs):
         return self._request('DELETE', uri, path_params, **kwargs)
