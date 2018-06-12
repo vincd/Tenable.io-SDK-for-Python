@@ -56,10 +56,9 @@ class TenableIOClient(object):
             self,
             username,
             password,
-            api_token,
+            api_token=None,
             endpoint=TenableIOConfig.get('endpoint'),
             verify=True
-
     ):
         self._username = username
         self._password = password
@@ -197,7 +196,6 @@ class TenableIOClient(object):
     @_error_handler
     def post(self, uri, payload=None, path_params=None, **kwargs):
         if isinstance(payload, BaseRequest):
-            print type(payload)
             payload = payload.as_payload()
         return self._request('POST', uri, path_params, json=payload, **kwargs)
 
@@ -256,3 +254,7 @@ class TenableIOClient(object):
     # Delayed qualifying decorator as staticmethod. This is a workaround to error raised from using a decorator
     # decorated by @staticmethod.
     _error_handler = staticmethod(_error_handler)
+
+    @property
+    def api_token(self):
+        return self._api_token
