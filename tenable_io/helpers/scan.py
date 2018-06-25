@@ -79,7 +79,7 @@ class ScanHelper(object):
         [scan.wait_until_stopped() for scan in scans]
         return self
 
-    def create(self, name, text_targets, template, credentials=None):
+    def create(self, name, text_targets, template, credentials=None, policy_id=None):
         """Get scan by ID.
 
         :param name: The name of the Scan to be created.
@@ -112,6 +112,7 @@ class ScanHelper(object):
                 ScanSettings(
                     name,
                     text_targets,
+                    policy_id=policy_id,
                 ),
                 credentials
             )
