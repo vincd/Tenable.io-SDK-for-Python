@@ -79,7 +79,7 @@ class ScanHelper(object):
         [scan.wait_until_stopped() for scan in scans]
         return self
 
-    def create(self, name, text_targets, template, credentials=None, policy_id=None):
+    def create(self, name, text_targets, template, credentials=None, policy_id=None, policy_name=None):
         """Get scan by ID.
 
         :param name: The name of the Scan to be created.
@@ -101,6 +101,13 @@ class ScanHelper(object):
         if not t:
             raise TenableIOException(u'Template with name or title as "%s" not found.' % template)
 
+        if not policy_id and policy_name:
+            p = self.policy(policy_name)
+
+            if not p:
+                raise TenableIOException(u'Policy with name as "%s" not found.' % policy_name)
+            policy_id = p.id
+
         if credentials and not isinstance(credentials, PolicyCredentials):
             raise TenableIOException(u'Credentials is not an instance of PolicyCredentials.')
         else:
@@ -118,6 +125,20 @@ class ScanHelper(object):
             )
         )
         return ScanRef(self._client, scan_id)
+
+    def policy(self, name=None):
+
+        policy = None
+
+        if name:
+            policy_list = self._client.policies_api.list()
+            for p in policy_list.policies:
+                if p.name == name:
+                    policy = p
+                    break
+
+        return policy
+
 
     def template(self, name=None, title=None):
         """Get template by name or title. The `title` argument is ignored if `name` is passed.
@@ -418,7 +439,9 @@ class ScanRef(object):
         :param history_id: A specific scan history ID, None for the most recent scan history. default to None.
         :return: The same ScanRef instance.
         """
-        self.wait_until_stopped(history_id=history_id)
+
+        # This call always return {"error":"The requested file was not found"}
+        # self.wait_until_stopped(history_id=history_id)
 
         if format in [ScanExportRequest.FORMAT_HTML, ScanExportRequest.FORMAT_PDF]:
             export_request = ScanExportRequest(format=format, chapters=chapter)
