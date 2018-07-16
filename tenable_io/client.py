@@ -242,7 +242,11 @@ class TenableIOClient(object):
 
         full_uri = self._endpoint + uri
 
-        response = self._session.request(method, full_uri, verify=self._verify, **kwargs)
+        proxies = {
+            'http': 'http://127.0.0.1:8080',
+            'https': 'http://127.0.0.1:8080',
+        }
+        response = self._session.request(method, full_uri, verify=self._verify, proxies=proxies, **kwargs)
         log_message = format_request(response)
 
         logging.info(log_message)

@@ -110,8 +110,15 @@ class ScanHelper(object):
 
         if credentials and not isinstance(credentials, PolicyCredentials):
             raise TenableIOException(u'Credentials is not an instance of PolicyCredentials.')
-        else:
-            credentials = PolicyCredentials()
+
+
+        if policy_id and credentials:
+            # create a new policy with the credentials
+            copy_custom_policy_id = self._client.policies_api.copy(policy_id)
+            payload = { "credentials": credentials.as_payload() }
+            self._client.put('policies/%(policy_id)s', payload,
+                             path_params={'policy_id': copy_custom_policy_id})
+            policy_id = copy_custom_policy_id
 
         scan_id = self._client.scans_api.create(
             ScanCreateRequest(

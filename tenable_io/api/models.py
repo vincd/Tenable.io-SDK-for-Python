@@ -1011,6 +1011,9 @@ class PolicyCredentialsAddHost(BaseModel):
             for ssh in self.SSH:
                 if isinstance(ssh, PolicyCredentialsAddHostSSH):
                     payload['SSH'].append(ssh.as_payload(True))
+        elif isinstance(self.SSH, PolicyCredentialsAddHostSSH):
+            payload.__setitem__('SSH', [])
+            payload['SSH'].append(self.SSH.as_payload(True))
         else:
             payload.pop('SSH', None)
 
@@ -1019,6 +1022,9 @@ class PolicyCredentialsAddHost(BaseModel):
             for windows in self.Windows:
                 if isinstance(windows, PolicyCredentialsAddHostWindows):
                     payload['Windows'].append(windows.as_payload(True))
+        elif isinstance(self.Windows, PolicyCredentialsAddHostWindows):
+            payload.__setitem__('Windows', [])
+            payload['Windows'].append(self.Windows.as_payload(True))
         else:
             payload.pop('Windows', None)
 
